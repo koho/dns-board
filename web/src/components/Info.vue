@@ -22,7 +22,7 @@ onMounted(function () {
         }
     });
     searchDialog = new Modal(document.getElementById('search'), {
-      keyboard: false
+        keyboard: false
     });
 });
 
@@ -41,10 +41,10 @@ function logout() {
                     {{ identity }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                    <li><a class="dropdown-item" href="#" style="pointer-events: none;cursor: default;">{{
-                        version
-                    }}</a></li>
-                    <li><a class="dropdown-item" href="#" style="pointer-events: none;cursor: default;">{{ uptime }}</a>
+                    <li><a class="dropdown-item read-text" href="#">{{ version }}</a></li>
+                    <li><a class="dropdown-item read-text" href="#">{{ uptime }}</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
                     </li>
                     <li><a class="dropdown-item" href="#" @click="searchDialog.show()">搜索</a></li>
                     <li><a class="dropdown-item" href="#" @click="logout">退出登录</a></li>
@@ -53,3 +53,10 @@ function logout() {
         </ul>
     </div>
 </template>
+
+<style scoped>
+.read-text {
+    pointer-events: none;
+    cursor: default;
+}
+</style>
