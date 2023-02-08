@@ -96,7 +96,7 @@ function downloadCSV() {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="downloadCSV">下载</button>
+                    <button type="button" class="btn btn-primary" @click="downloadCSV" :disabled="resultList.length == 0">下载</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
                 </div>
             </div>
