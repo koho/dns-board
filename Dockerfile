@@ -1,14 +1,16 @@
 FROM node
 
-RUN cd ./web && npm install && npm run build
+COPY ./web /web
 
-RUN cp -r ./web/dist /
+RUN cd /web && npm install && npm run build
 
 FROM golang:latest
 
-COPY --from=0 /dist ./static
+COPY . /board
 
-RUN go build -trimpath -ldflags="-s -w" -o /dns-board main.go
+COPY --from=0 /web/dist /board/static
+
+RUN cd /board && go build -trimpath -ldflags="-s -w" -o /dns-board main.go
 
 FROM alpine:latest
 
