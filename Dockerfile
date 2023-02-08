@@ -12,7 +12,7 @@ COPY . /board
 
 WORKDIR /board
 
-COPY --from=0 /web/dist ./static
+COPY --from=0 /web/dist ./static/dist
 
 RUN apk add --no-cache build-base
 
