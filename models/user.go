@@ -14,7 +14,7 @@ type User struct {
 
 func GetUser(name string) (*User, error) {
 	var user User
-	if err := db.GetDB().Where("user = ?", name).First(&user).Error; err != nil {
+	if err := db.GetDB().Where("user = ?", name).Limit(1).Find(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil

@@ -1,5 +1,5 @@
 {
-  "name": "dns-web",
+  "name": "dns-board-web",
   "version": "0.0.0",
   "private": true,
   "scripts": {

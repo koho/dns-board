@@ -2,19 +2,25 @@ FROM node
 
 COPY ./web /web
 
-RUN cd /web && npm install && npm run build
+WORKDIR /web
 
-FROM golang:latest
+RUN npm install && npm run build
+
+FROM golang:alpine
 
 COPY . /board
 
-COPY --from=0 /web/dist /board/static
+WORKDIR /board
 
-RUN cd /board && go build -trimpath -ldflags="-s -w" -o /dns-board main.go
+COPY --from=0 /web/dist ./static
+
+RUN apk add --no-cache build-base
+
+RUN CGO_ENABLED=1 go build -trimpath -ldflags="-s -w" -o /dns-board main.go
 
 FROM alpine:latest
 
-COPY --from=1 /dns-board /dns-board
+COPY --from=1 /dns-board /
 
 EXPOSE 80
 
