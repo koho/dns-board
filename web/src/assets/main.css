@@ -1,0 +1,40 @@
+body {
+  background-color: rgb(17, 18, 23);
+  color: rgb(204, 204, 220);
+}
+
+.mapboxgl-popup-content {
+  background: rgb(34, 37, 43) !important;
+  box-shadow: rgb(24 26 27 / 75%) 0px 4px 8px !important;
+}
+
+.mapboxgl-popup, .mapboxgl-popup-close-button {
+  color: #fff !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: rgb(34, 37, 43) !important;
+}
+
+table {
+  color: rgb(204, 204, 220) !important;
+}
+
+thead th {
+  color: #6E9FFF;
+  background-color: rgb(34, 37, 43) !important;
+  position: sticky;
+  top: 0;
+  z-index: 1; 
+}
+
+tr {
+  border-bottom: 1px solid rgba(204, 204, 220, 0.07);
+}
+
+td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
+}

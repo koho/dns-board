@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNS Board</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .account-container {
+      display: flex;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      background-image: linear-gradient(#290672, #000);
+      align-items: center;
+      justify-content: center;
+      z-index: 95;
+    }
+
+    .center {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      height: 100%;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+    }
+
+    .flex {
+      display: flex;
+      -webkit-box-align: center;
+      align-items: center;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .account {
+      color: #CCCCDC;
+    }
+
+    input {
+      background-color: rgba(0, 0, 0, 0) !important;
+      color: white !important;
+    }
+
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 340px;
+    }
+
+    form {
+      width: 100%;
+    }
+
+    button {
+      width: 100%;
+    }
+
+    .version {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .logo {
+      line-height: 0.4;
+      text-align: center;
+    }
+
+    .logo img {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="account-container">
+    <div class="center">
+      <div class="flex">
+        <div class="account">
+          <div class="logo">
+            <img src="/logo.svg" width="100" height="100">
+            <div>
+              <h3>DNS Board</h3>
+            </div>
+          </div>
+          <div class="version"><span>1.0.0</span></div>
+          <div class="content">
+            <form action="/auth" method="post">
+              <div class="mb-3">
+                <label for="account" class="form-label">用户名</label>
+                <input class="form-control" id="account" value="admin" name="user">
+              </div>
+              <div class="mb-4">
+                <label for="passwd" class="form-label">密码</label>
+                <input type="password" class="form-control" id="passwd" name="password">
+              </div>
+              <button type="submit" class="btn btn-primary">登录</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
