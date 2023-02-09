@@ -3,8 +3,9 @@ package controllers
 import (
 	dnstap "github.com/dnstap/golang-dnstap"
 	"github.com/gin-gonic/gin"
-	"github.com/koho/dnstap-web/db"
-	"github.com/koho/dnstap-web/models"
+	"github.com/koho/dns-board/db"
+	"github.com/koho/dns-board/models"
+	"net/http"
 )
 
 type Duration struct {
@@ -19,8 +20,8 @@ func GetRequestDuration(c *gin.Context) {
 	m = models.AddTimeClause(m, c.DefaultQuery("hour", "3"))
 	var durations []Duration
 	if err := m.Group("t, ip").Find(&durations).Error; err != nil {
-		c.AbortWithError(500, err)
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(200, durations)
+	c.JSON(http.StatusOK, durations)
 }

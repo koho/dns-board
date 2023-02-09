@@ -3,7 +3,7 @@ package models
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/koho/dnstap-web/db"
+	"github.com/koho/dns-board/db"
 )
 
 type User struct {
@@ -14,7 +14,7 @@ type User struct {
 
 func GetUser(name string) (*User, error) {
 	var user User
-	if err := db.GetDB().Where("user = ?", name).Limit(1).Find(&user).Error; err != nil {
+	if err := db.GetDB().Where("user = ?", name).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -41,7 +41,7 @@ func UpdateUserPassword(name string, password string) error {
 	return db.GetDB().Model(&User{}).Where("user = ?", name).Update("password", GetEncodedPassword(password)).Error
 }
 
-func ensureAdmin() error {
+func ensureAdmin(db.Option) error {
 	if _, err := GetUser("admin"); err != nil {
 		return CreateUser("admin", "")
 	}

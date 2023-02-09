@@ -2,9 +2,9 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/koho/dnstap-web/controllers"
-	"github.com/koho/dnstap-web/middleware"
-	"github.com/koho/dnstap-web/static"
+	"github.com/koho/dns-board/controllers"
+	"github.com/koho/dns-board/middleware"
+	"github.com/koho/dns-board/static"
 	"io/fs"
 	"log"
 	"net/http"
@@ -18,10 +18,10 @@ func NewRouter() *gin.Engine {
 	{
 		api.GET("/meta", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
-				"identity": Identity,
-				"version":  Version,
-				"startup":  Startup,
-				"mapUrl":   MapURL,
+				"identity": identity,
+				"version":  version,
+				"startup":  startup,
+				"mapUrl":   mapURL,
 			})
 		})
 		api.GET("/domain", controllers.GetDomainTable)

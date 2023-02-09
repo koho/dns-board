@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dnstap/golang-dnstap"
-	"github.com/koho/dnstap-web/models"
+	"github.com/koho/dns-board/models"
 	"github.com/miekg/dns"
 	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
@@ -38,7 +38,7 @@ func (d *DBOutput) RunOutputLoop() {
 	dt := &dnstap.Dnstap{}
 	for frame := range d.outputChannel {
 		if err := proto.Unmarshal(frame, dt); err != nil {
-			log.Printf("proto.Unmarshal() failed: %s", err)
+			log.Printf("proto.Unmarshal() failed: %v\n", err)
 			continue
 		}
 		if d.cb != nil {
@@ -47,12 +47,12 @@ func (d *DBOutput) RunOutputLoop() {
 		msg, err := d.MessageFromDnstap(dt.Message)
 		if err != nil {
 			if !errors.Is(err, os.ErrInvalid) {
-				log.Printf("decode message failed: %s", err)
+				log.Printf("decode message failed: %v\n", err)
 			}
 			continue
 		}
 		if err = d.db.Create(msg).Error; err != nil {
-			log.Printf("create message failed: %s", err)
+			log.Printf("create message failed: %v\n", err)
 		}
 	}
 	close(d.wait)

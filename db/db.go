@@ -3,18 +3,34 @@ package db
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
+	"os"
+	"time"
 )
+
+type Handler func(Option) error
 
 var (
 	db       *gorm.DB
 	models   []interface{}
-	handlers []func() error
+	handlers []Handler
 )
 
-func Init() {
+type Option struct {
+	Retention int `yaml:"retention"`
+}
+
+func Init(opt Option) {
 	var err error
-	db, err = gorm.Open(sqlite.Open("dns.db"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open("dns.db"), &gorm.Config{
+		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+			SlowThreshold:             0 * time.Millisecond,
+			LogLevel:                  logger.Warn,
+			Colorful:                  true,
+			IgnoreRecordNotFoundError: true,
+		}),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -22,7 +38,7 @@ func Init() {
 		log.Fatal(err)
 	}
 	for _, h := range handlers {
-		if err = h(); err != nil {
+		if err = h(opt); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -36,7 +52,7 @@ func RegisterModel(obj ...interface{}) {
 	models = append(models, obj...)
 }
 
-func OnStartup(h func() error) {
+func OnStartup(h Handler) {
 	handlers = append(handlers, h)
 }
 

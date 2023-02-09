@@ -4,8 +4,9 @@ import (
 	"github.com/deckarep/golang-set/v2"
 	dnstap "github.com/dnstap/golang-dnstap"
 	"github.com/gin-gonic/gin"
-	"github.com/koho/dnstap-web/models"
+	"github.com/koho/dns-board/models"
 	"github.com/samber/lo"
+	"net/http"
 	"strings"
 )
 
@@ -19,7 +20,7 @@ type DomainStat struct {
 func GetDomainTable(c *gin.Context) {
 	messages, err := models.GetMessagesByType(dnstap.Message_CLIENT_RESPONSE, c.DefaultQuery("hour", "3"))
 	if err != nil {
-		c.AbortWithError(500, err)
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 	table := make(map[string]*DomainStat)
@@ -56,5 +57,5 @@ func GetDomainTable(c *gin.Context) {
 			Count: value.Count,
 		}
 	})
-	c.JSON(200, domainList)
+	c.JSON(http.StatusOK, domainList)
 }

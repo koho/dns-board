@@ -2,8 +2,9 @@ package models
 
 import (
 	dnstap "github.com/dnstap/golang-dnstap"
-	"github.com/koho/dnstap-web/db"
+	"github.com/koho/dns-board/db"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -19,11 +20,6 @@ type Message struct {
 	Answer   string              `json:"answer"`
 	RCode    int                 `json:"rcode"`
 	Duration int64               `json:"duration"`
-}
-
-func init() {
-	db.RegisterModel(&Message{}, &User{})
-	db.OnStartup(ensureAdmin)
 }
 
 func AddTimeClause(m *gorm.DB, duration string) *gorm.DB {
@@ -54,4 +50,19 @@ func GetMessagesByKeyword(kw string) ([]Message, error) {
 		return nil, err
 	}
 	return msg, nil
+}
+
+func dropOutdatedMessages(day int) {
+	period := 24 * time.Hour * time.Duration(day)
+	ticker := time.NewTicker(period)
+	defer ticker.Stop()
+	for range ticker.C {
+		var last Message
+		if err := db.GetDB().Order("id desc").Limit(1).Find(&last).Error; err == nil && last.Time != nil {
+			checkpoint := last.Time.Add(-period)
+			if err = db.GetDB().Where("time < ?", checkpoint).Delete(&Message{}).Error; err != nil {
+				log.Printf("drop message error: %v\n", err)
+			}
+		}
+	}
 }

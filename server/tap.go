@@ -1,39 +1,39 @@
 package server
 
 import (
-	"fmt"
 	dnstap "github.com/dnstap/golang-dnstap"
-	"github.com/koho/dnstap-web/db"
-	"github.com/koho/dnstap-web/output"
+	"github.com/koho/dns-board/db"
+	"github.com/koho/dns-board/output"
 	"log"
 	"net"
-	"net/url"
 	"os"
+	"strings"
 )
 
-var logger = log.New(os.Stderr, "", log.LstdFlags)
+const (
+	tcpPrefix  = "tcp://"
+	unixPrefix = "unix://"
+)
+
+var logger = log.New(os.Stdout, "", log.LstdFlags)
 
 func RunDnstap(u string) {
-	tapUrl, err := url.Parse(u)
-	if err != nil {
-		log.Fatal(err)
-	}
 	var i *dnstap.FrameStreamSockInput
-	switch tapUrl.Scheme {
-	case "tcp":
-		l, err := net.Listen("tcp", tapUrl.Host)
+	var err error
+	if strings.HasPrefix(u, tcpPrefix) {
+		addr := strings.TrimPrefix(u, tcpPrefix)
+		l, err := net.Listen("tcp", addr)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "dnstap: Failed to listen on %s: %v\n", tapUrl.Host, err)
-			os.Exit(1)
+			logger.Fatalf("dnstap: failed to listen on %s: %v\n", addr, err)
 		}
 		i = dnstap.NewFrameStreamSockInput(l)
-	case "unix":
-		i, err = dnstap.NewFrameStreamSockInputFromPath(tapUrl.Path)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "dnstap: Failed to open input socket %s: %v\n", tapUrl.Path, err)
-			os.Exit(1)
+	} else if strings.HasPrefix(u, unixPrefix) {
+		path := strings.TrimPrefix(u, unixPrefix)
+		if i, err = dnstap.NewFrameStreamSockInputFromPath(path); err != nil {
+			logger.Fatalf("dnstap: failed to open input socket %s: %v\n", path, err)
 		}
-		fmt.Fprintf(os.Stderr, "dnstap: opened input socket %s\n", tapUrl.Path)
+	} else {
+		logger.Fatalf("unsupported protocol: %v\n", u)
 	}
 	i.SetTimeout(0)
 	i.SetLogger(logger)

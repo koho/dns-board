@@ -3,8 +3,9 @@ package controllers
 import (
 	dnstap "github.com/dnstap/golang-dnstap"
 	"github.com/gin-gonic/gin"
-	"github.com/koho/dnstap-web/db"
-	"github.com/koho/dnstap-web/models"
+	"github.com/koho/dns-board/db"
+	"github.com/koho/dns-board/models"
+	"net/http"
 )
 
 type QueryIPStat struct {
@@ -18,10 +19,10 @@ func GetQueryIPStat(c *gin.Context) {
 	var ipStat []QueryIPStat
 	if err := models.AddTimeClause(m, c.DefaultQuery("hour", "3")).
 		Group("ip").Order("count desc").Find(&ipStat).Error; err != nil {
-		c.AbortWithError(500, err)
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(200, ipStat)
+	c.JSON(http.StatusOK, ipStat)
 }
 
 type QueryTypeStat struct {
@@ -35,10 +36,10 @@ func GetQueryTypeStat(c *gin.Context) {
 	var typeStat []QueryTypeStat
 	if err := models.AddTimeClause(m, c.DefaultQuery("hour", "3")).
 		Group("q_type").Order("count desc").Find(&typeStat).Error; err != nil {
-		c.AbortWithError(500, err)
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(200, typeStat)
+	c.JSON(http.StatusOK, typeStat)
 }
 
 type QueryCountStat struct {
@@ -51,8 +52,8 @@ func GetQueryCountStat(c *gin.Context) {
 		Where("type = ?", dnstap.Message_CLIENT_RESPONSE)
 	var countStat []QueryCountStat
 	if err := models.AddTimeClause(m, c.DefaultQuery("hour", "3")).Group("t").Find(&countStat).Error; err != nil {
-		c.AbortWithError(500, err)
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(200, countStat)
+	c.JSON(http.StatusOK, countStat)
 }

@@ -37,6 +37,13 @@ onMounted(function () {
                         textAlign: 'center',
                     },
                 },
+                legend: {
+                    itemName: {
+                        style: {
+                            fontSize: 16
+                        }
+                    }
+                },
                 interactions: [{ type: 'element-active' }],
             }
             const piePlot = new Pie(props.id, cfg);
