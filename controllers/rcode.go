@@ -29,19 +29,25 @@ func GetRCodeStat(c *gin.Context) {
 		codeMap[r.RCode] = false
 	}
 	result := make([]Record, 0, len(rCodes))
-	prevTime := ""
-	for _, r := range rCodes {
-		if prevTime != "" && r.T != prevTime {
+	addAbsent := func(t string) {
+		if t != "" {
 			for code, added := range codeMap {
 				if !added {
-					result = append(result, Record{prevTime, dns.RcodeToString[code], 0})
+					result = append(result, Record{t, dns.RcodeToString[code], 0})
 				}
 				codeMap[code] = false
 			}
+		}
+	}
+	prevTime := ""
+	for _, r := range rCodes {
+		if r.T != prevTime {
+			addAbsent(prevTime)
 		}
 		result = append(result, Record{r.T, dns.RcodeToString[r.RCode], r.Value})
 		codeMap[r.RCode] = true
 		prevTime = r.T
 	}
+	addAbsent(prevTime)
 	c.JSON(http.StatusOK, result)
 }
