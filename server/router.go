@@ -10,8 +10,13 @@ import (
 	"net/http"
 )
 
-func NewRouter() *gin.Engine {
-	r := gin.Default()
+func NewRouter() (r *gin.Engine) {
+	if gin.Mode() == gin.ReleaseMode {
+		r = gin.New()
+		r.Use(gin.Recovery())
+	} else {
+		r = gin.Default()
+	}
 	setupStatic(r)
 	r.POST("/auth", controllers.Login)
 	api := r.Group("/api", middleware.AuthRequired())
@@ -34,7 +39,7 @@ func NewRouter() *gin.Engine {
 		api.GET("/size", controllers.GetResponseSize)
 		api.GET("/cache", controllers.GetCacheHit)
 	}
-	return r
+	return
 }
 
 func setupStatic(r *gin.Engine) {
