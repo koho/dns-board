@@ -25,7 +25,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&confPath, "c", "config.yml", "config file path")
+	flag.StringVar(&confPath, "c", "board.yml", "config file path")
 	flag.StringVar(&config.Server.Tap, "t", "tcp://:6000", "dnstap url (tcp or unix).")
 	flag.StringVar(&config.Server.Listen, "l", ":80", "web server listen address")
 	flag.StringVar(&config.Server.Map, "m", "", "maplibre style url")
