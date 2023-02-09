@@ -3,12 +3,14 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { state, getTokenHeader } from '@/state'
 
+const total = ref(0);
 
 onMounted(function () {
     axios.get('/api/domain?hour=' + state.hour, getTokenHeader())
         .then(function (response) {
             state.domainList = response.data.sort((a, b) => b.count - a.count).map(e => {
-                return { ...e, ip: getIP(e) }
+                total.value += e.count;
+                return { ...e, ip: getIP(e) };
             });
             getGeoLocation();
         })
@@ -74,7 +76,7 @@ function getGeoLocation() {
                     <td>{{ row.name }}</td>
                     <td>{{ row.ip }}</td>
                     <td>{{ row.loc }}</td>
-                    <td>{{ row.count }}</td>
+                    <td>{{ row.count }} / {{ Math.round((row.count / total) * 100) }}%</td>
                 </tr>
             </tbody>
         </table>

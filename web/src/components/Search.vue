@@ -17,7 +17,7 @@ const typeMap = {
 };
 
 const colNames = [
-    "#", "时间", "类型", "IP", "端口", "协议", "域名", "请求类型", "应答", "响应码", "耗时"
+    "#", "时间", "类型", "IP", "端口", "协议", "域名", "请求类型", "应答", "响应码", "大小", "耗时"
 ]
 
 var resultList = ref([]);
@@ -89,6 +89,7 @@ function downloadCSV() {
                                     <td>{{ row.qtype }}</td>
                                     <td>{{ row.answer }}</td>
                                     <td>{{ row.rcode }}</td>
+                                    <td>{{ row.size }}</td>
                                     <td>{{ row.duration }}</td>
                                 </tr>
                             </tbody>

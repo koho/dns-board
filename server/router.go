@@ -30,6 +30,9 @@ func NewRouter() *gin.Engine {
 		api.GET("/count", controllers.GetQueryCountStat)
 		api.GET("/qtype", controllers.GetQueryTypeStat)
 		api.GET("/search", controllers.SearchRecord)
+		api.GET("/rcode", controllers.GetRCodeStat)
+		api.GET("/size", controllers.GetResponseSize)
+		api.GET("/cache", controllers.GetCacheHit)
 	}
 	return r
 }

@@ -19,6 +19,7 @@ type Message struct {
 	QType    string              `json:"qtype"`
 	Answer   string              `json:"answer"`
 	RCode    int                 `json:"rcode"`
+	Size     int                 `json:"size"`
 	Duration int64               `json:"duration"`
 }
 

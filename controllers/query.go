@@ -42,15 +42,15 @@ func GetQueryTypeStat(c *gin.Context) {
 	c.JSON(http.StatusOK, typeStat)
 }
 
-type QueryCountStat struct {
-	T     string `json:"time"`
-	Value int64  `json:"value"`
+type TimeSeries struct {
+	T     string  `json:"time"`
+	Value float64 `json:"value"`
 }
 
 func GetQueryCountStat(c *gin.Context) {
 	m := db.GetDB().Model(&models.Message{}).Select("strftime('%Y-%m-%d %H:%M', time, 'localtime') as t, count(*) as value").
 		Where("type = ?", dnstap.Message_CLIENT_RESPONSE)
-	var countStat []QueryCountStat
+	var countStat []TimeSeries
 	if err := models.AddTimeClause(m, c.DefaultQuery("hour", "3")).Group("t").Find(&countStat).Error; err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return

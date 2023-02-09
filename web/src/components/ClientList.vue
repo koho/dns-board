@@ -3,12 +3,16 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { state, getTokenHeader } from '@/state';
 
-var clientList = ref([]);
+const clientList = ref([]);
+const total = ref(0);
 
 onMounted(function () {
     axios.get('/api/client?hour=' + state.hour, getTokenHeader())
         .then(function (response) {
-            clientList.value = response.data.sort((a, b) => b.count - a.count);
+            clientList.value = response.data.sort((a, b) => b.count - a.count).map(e => {
+                total.value += e.count;
+                return e;
+            });
         })
         .catch(function (error) {
             // handle error
@@ -34,7 +38,7 @@ onMounted(function () {
                 <tr v-for="(row, i) in clientList" :key="'client-row-' + i">
                     <th scope="row">{{ i + 1 }}</th>
                     <td>{{ row.ip }}</td>
-                    <td>{{ row.count }}</td>
+                    <td>{{ row.count }} / {{ Math.round((row.count / total) * 100) }}%</td>
                 </tr>
             </tbody>
         </table>

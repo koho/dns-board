@@ -7,13 +7,14 @@ import GeoMap from './components/GeoMap.vue'
 import Info from './components/Info.vue';
 import Latency from './components/Latency.vue';
 import QType from './components/QType.vue';
-import QueryCount from './components/QueryCount.vue';
+import LineChart from './components/LineChart.vue';
 import SwitchTime from './components/SwitchTime.vue';
 import Search from './components/Search.vue';
+import RCode from './components/RCode.vue';
 
 var hour = new URLSearchParams(window.location.search).get('hour');
 if (!hour) {
-    hour = '3';
+  hour = '3';
 }
 state.hour = hour;
 
@@ -43,7 +44,7 @@ function reload() {
     <div class="row">
       <div class="col">
         <Card title="每分钟请求数">
-          <QueryCount id="query-count"></QueryCount>
+          <LineChart id="query-count" url="/api/count" text="每分钟请求数"></LineChart>
         </Card>
       </div>
       <div class="col">
@@ -52,8 +53,8 @@ function reload() {
         </Card>
       </div>
       <div class="col">
-        <Card title="请求类型占比">
-          <QType id="qtype"></QType>
+        <Card title="响应状态">
+          <RCode id="rcode"></RCode>
         </Card>
       </div>
       <div class="col">
@@ -71,6 +72,23 @@ function reload() {
       <div class="col">
         <Card title="请求域名排行">
           <DomainList></DomainList>
+        </Card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <Card title="请求类型占比">
+          <QType id="qtype"></QType>
+        </Card>
+      </div>
+      <div class="col">
+        <Card title="响应大小趋势（字节）">
+          <LineChart id="resp-size" url="/api/size" text="响应大小"></LineChart>
+        </Card>
+      </div>
+      <div class="col">
+        <Card title="缓存命中率">
+          <LineChart id="cache-hit" url="/api/cache" text="命中率"></LineChart>
         </Card>
       </div>
     </div>

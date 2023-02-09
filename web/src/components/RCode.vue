@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from 'vue';
-import { Line, G2 } from '@antv/g2plot';
+import { Heatmap, G2 } from '@antv/g2plot';
 import axios from 'axios';
 import { state, getTokenHeader } from '@/state';
 
@@ -18,31 +18,31 @@ G2.registerTheme('transparent-dark', {
 });
 
 onMounted(function () {
-    axios.get('/api/count?hour=' + state.hour, getTokenHeader())
+    axios.get('/api/rcode?hour=' + state.hour, getTokenHeader())
         .then(function (response) {
-            const line = new Line(props.id, {
-                padding: 'auto',
-                forceFit: true,
+            const cfg = {
                 data: response.data,
                 theme: 'transparent-dark',
                 xField: 'time',
-                yField: 'value',
+                yField: 'type',
+                colorField: 'value',
+                legend: {
+                    rail: {
+                        defaultLength: 200
+                    }
+                },
+                color: ['#047331', '#388C04', '#CACE17', '#E16519', '#CA0300'],
+                meta: {
+                    'value': {
+                        alias: '计数'
+                    }
+                },
                 xAxis: {
                     tickCount: 5,
                 },
-                smooth: true,
-                area: {
-                    style: {
-                        fillOpacity: 0.15,
-                    },
-                },
-                meta: {
-                    'value': {
-                        alias: '每分钟请求数'
-                    }
-                }
-            });
-            line.render();
+            }
+            const plot = new Heatmap(props.id, cfg);
+            plot.render();
         })
         .catch(function (error) {
             // handle error
@@ -57,7 +57,3 @@ onMounted(function () {
 <template>
     <div :id="id"></div>
 </template>
-
-<style scoped>
-
-</style>

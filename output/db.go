@@ -91,6 +91,7 @@ func (d *DBOutput) MessageFromDnstap(m *dnstap.Message) (*models.Message, error)
 		QType:    dns.TypeToString[msg.Question[0].Qtype],
 		Answer:   gatherAnswer(msg.Question[0].Qtype, msg.Answer),
 		RCode:    msg.Rcode,
+		Size:     len(m.ResponseMessage),
 	}
 	respTime := parseTime(m.GetResponseTimeSec(), m.GetResponseTimeNsec())
 	if record.Time != nil && respTime != nil {
