@@ -25,11 +25,12 @@ var (
 )
 
 func init() {
-	flag.StringVar(&confPath, "c", "board.yml", "config file path")
-	flag.StringVar(&config.Server.Tap, "t", "tcp://:6000", "dnstap url (tcp or unix).")
+	flag.StringVar(&confPath, "conf", "board.yml", "config file path")
+	flag.StringVar(&config.Server.Tap, "tap", "tcp://:6000", "dnstap url (tcp or unix).")
 	flag.StringVar(&config.Server.Listen, "l", ":80", "web server listen address")
-	flag.StringVar(&config.Server.Map, "m", "", "maplibre style url")
-	flag.StringVar(&setPass, "p", "", "set admin password")
+	flag.StringVar(&config.Server.Map, "map", "", "maplibre style url")
+	flag.StringVar(&config.DB.Path, "db", "dns.db", "database file path")
+	flag.StringVar(&setPass, "pwd", "", "set admin password")
 	flag.IntVar(&config.DB.Retention, "r", 7, "the max number of day for data to keep")
 	flag.BoolVar(&showVersion, "v", false, "show version info")
 	flag.Parse()

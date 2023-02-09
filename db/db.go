@@ -18,12 +18,13 @@ var (
 )
 
 type Option struct {
-	Retention int `yaml:"retention"`
+	Path      string `yaml:"db"`
+	Retention int    `yaml:"retention"`
 }
 
 func Init(opt Option) {
 	var err error
-	db, err = gorm.Open(sqlite.Open("dns.db"), &gorm.Config{
+	db, err = gorm.Open(sqlite.Open(opt.Path), &gorm.Config{
 		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
 			SlowThreshold:             0 * time.Millisecond,
 			LogLevel:                  logger.Warn,
