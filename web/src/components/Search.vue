@@ -20,22 +20,35 @@ const colNames = [
     "#", "时间", "类型", "IP", "端口", "协议", "域名", "请求类型", "应答", "响应码", "大小", "耗时"
 ]
 
-var resultList = ref([]);
-var kwInput = ref("");
+const maxLine = 5000;
+
+const resultList = ref([]);
+const searched = ref(false);
+const kwInput = ref("");
+const si = ref(null);
 
 function onEnter(e) {
+    if (e.target.value === "")
+        return;
+    e.target.blur();
     axios.get("/api/search?kw=" + e.target.value, getTokenHeader()).then(resp => {
         resultList.value = resp.data;
+        searched.value = true;
     }).catch(error => {
         console.log(error);
     });
 }
 
 onMounted(function () {
-    document.getElementById(props.id).addEventListener('hidden.bs.modal', function (e) {
+    const s = document.getElementById(props.id);
+    s.addEventListener('hidden.bs.modal', function (e) {
         resultList.value = [];
+        searched.value = false;
         kwInput.value = "";
     });
+    s.addEventListener('shown.bs.modal', function (e) {
+        si.value.focus();
+    })
 });
 
 function downloadCSV() {
@@ -53,7 +66,7 @@ function downloadCSV() {
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-dark text-white">
                 <div class="modal-header">
-                    <form>
+                    <form v-on:submit.prevent="">
                         <label class="search-icon" for="search-input" id="search-label">
                             <svg width="20" height="20" viewBox="0 0 20 20">
                                 <path
@@ -62,9 +75,10 @@ function downloadCSV() {
                                     stroke-linejoin="round"></path>
                             </svg>
                         </label>
-                        <input aria-labelledby="search-label" id="search-input" autocomplete="off" autocorrect="off"
-                            autocapitalize="off" enterkeyhint="search" spellcheck="false" autofocus="true"
-                            placeholder="搜索域名或 IP" v-on:keyup.enter="onEnter" v-model="kwInput">
+                        <input ref="si" aria-labelledby="search-label" id="search-input" autocomplete="off"
+                            autocorrect="off" autocapitalize="off" enterkeyhint="search" spellcheck="false"
+                            autofocus="true" placeholder="搜索域名或 IP" v-on:keyup.enter.prevent="onEnter"
+                            v-model="kwInput">
                     </form>
                     <button type="button" class="btn-close btn-close-white" :disabled="kwInput == ''"
                         @click="kwInput = ''"></button>
@@ -78,7 +92,7 @@ function downloadCSV() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(row, i) in resultList">
+                                <tr v-for="(row, i) in resultList.slice(0, maxLine)">
                                     <th scope="row">{{ i + 1 }}</th>
                                     <td>{{ row.time }}</td>
                                     <td>{{ typeMap[row.type] }}</td>
@@ -95,9 +109,14 @@ function downloadCSV() {
                             </tbody>
                         </table>
                     </div>
+                    <div v-if="resultList.length == 0 && searched" class="record-hint">找不到符合条件的记录</div>
+                    <div v-if="resultList.length > maxLine && searched" class="record-hint mt-3">
+                        已省略 {{ resultList.length - maxLine }} 条记录，请下载查看
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="downloadCSV" :disabled="resultList.length == 0">下载</button>
+                    <button type="button" class="btn btn-primary" @click="downloadCSV"
+                        :disabled="resultList.length == 0">下载</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
                 </div>
             </div>
@@ -155,5 +174,9 @@ input {
 
 .modal-footer {
     border-top: none;
+}
+
+.record-hint {
+    text-align: center;
 }
 </style>

@@ -108,4 +108,12 @@ function reload() {
 .container-fluid .row:nth-child(2) .card-body div:first-child {
   height: 760px;
 }
+
+.col {
+  flex: 1 0 600px;
+}
+
+nav {
+  box-shadow: 0 1px 6px 0 rgb(0 0 0 / 20%);
+}
 </style>

@@ -21,9 +21,7 @@ onMounted(function () {
             logout();
         }
     });
-    searchDialog = new Modal(document.getElementById('search'), {
-        keyboard: false
-    });
+    searchDialog = new Modal(document.getElementById('search'));
 });
 
 function logout() {
@@ -41,13 +39,13 @@ function logout() {
                     {{ identity }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                    <li><a class="dropdown-item read-text" href="#">{{ version }}</a></li>
-                    <li><a class="dropdown-item read-text" href="#">{{ uptime }}</a></li>
+                    <li><span class="dropdown-item read-text">{{ version }}</span></li>
+                    <li><span class="dropdown-item read-text">{{ uptime }}</span></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#" @click="searchDialog.show()">搜索</a></li>
-                    <li><a class="dropdown-item" href="#" @click="logout">退出登录</a></li>
+                    <li><a class="dropdown-item" href="#" v-on:click.prevent="searchDialog.show()">搜索</a></li>
+                    <li><a class="dropdown-item" href="#" v-on:click.prevent="logout">退出登录</a></li>
                 </ul>
             </li>
         </ul>
