@@ -52,7 +52,6 @@ func main() {
 		if err := models.UpdateUserPassword("admin", config.Password); err != nil {
 			log.Fatal(err)
 		}
-		return
 	}
 	server.Run(config.Server)
 }
