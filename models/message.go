@@ -55,7 +55,7 @@ func GetMessagesByKeyword(kw string) ([]Message, error) {
 
 func dropOutdatedMessages(day int) {
 	period := 24 * time.Hour * time.Duration(day)
-	ticker := time.NewTicker(period)
+	ticker := time.NewTicker(24 * time.Hour)
 	defer ticker.Stop()
 	for range ticker.C {
 		var last Message
