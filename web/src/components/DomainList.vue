@@ -1,36 +1,16 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { watch, ref } from 'vue';
 import axios from 'axios';
-import { state, getTokenHeader } from '@/state'
+import { state } from '@/state'
 
 const total = ref(0);
 
-onMounted(function () {
-    axios.get('/api/domain?hour=' + state.hour, getTokenHeader())
-        .then(function (response) {
-            state.domainList = response.data.sort((a, b) => b.count - a.count).map(e => {
-                total.value += e.count;
-                return { ...e, ip: getIP(e) };
-            });
-            getGeoLocation();
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
-        .finally(function () {
-            // always executed
-        });
-});
-
-function getIP(domain) {
-    if (domain.ipv4.length > 0) {
-        return domain.ipv4[0];
-    } else if (domain.ipv6.length > 0) {
-        return domain.ipv6[0];
-    }
-    return "";
-}
+watch(() => state.domainList, val => {
+    val.forEach(e => {
+        total.value += e.count;
+    });
+    getGeoLocation();
+})
 
 function getGeoLocation() {
     let c = parseInt(state.domainList.length / 100);
@@ -38,7 +18,7 @@ function getGeoLocation() {
         c++;
     }
     for (let i = 0; i < state.domainList.length; i += 100) {
-        axios.post('http://ip-api.com/batch?lang=zh-CN', state.domainList.slice(i, i + 100).map(x => getIP(x))).then(resp => {
+        axios.post('http://ip-api.com/batch?lang=zh-CN', state.domainList.slice(i, i + 100).map(x => x.ip)).then(resp => {
             resp.data.forEach((e, j) => {
                 if (e.status != 'success')
                     return;

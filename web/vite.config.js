@@ -24,10 +24,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/',
+        target: 'http://127.0.0.1:80/',
       },
       '/auth': {
-        target: 'http://localhost:8080/'
+        target: 'http://127.0.0.1:80/'
       }
     }
   }

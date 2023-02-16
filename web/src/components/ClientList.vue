@@ -1,27 +1,14 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import axios from 'axios';
-import { state, getTokenHeader } from '@/state';
+import { ref, watch } from 'vue';
+import { state } from '@/state';
 
-const clientList = ref([]);
 const total = ref(0);
 
-onMounted(function () {
-    axios.get('/api/client?hour=' + state.hour, getTokenHeader())
-        .then(function (response) {
-            clientList.value = response.data.sort((a, b) => b.count - a.count).map(e => {
-                total.value += e.count;
-                return e;
-            });
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
-        })
-        .finally(function () {
-            // always executed
-        });
-});
+watch(() => state.ipCount, val => {
+    val.forEach(e => {
+        total.value += e.count;
+    });
+})
 </script>
 
 <template>
@@ -35,7 +22,7 @@ onMounted(function () {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(row, i) in clientList" :key="'client-row-' + i">
+                <tr v-for="(row, i) in state.ipCount" :key="'client-row-' + i">
                     <th scope="row">{{ i + 1 }}</th>
                     <td>{{ row.ip }}</td>
                     <td>{{ row.count }} / {{ Math.round((row.count / total) * 100) }}%</td>

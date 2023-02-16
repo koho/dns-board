@@ -4,6 +4,13 @@ export const state = reactive({
     domainList: [],
     geoLoaded: false,
     hour: '',
+    queryCount: [],
+    durationData: [],
+    rcodeData: [],
+    sizeData: [],
+    cacheData: [],
+    ipCount: [],
+    qtypeCount: [],
 })
 
 export function getTokenHeader() {
