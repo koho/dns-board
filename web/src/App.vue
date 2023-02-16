@@ -99,7 +99,7 @@ function stat(data) {
   });
   state.rcodeData = rcodeData;
   state.sizeData = Object.entries(timeGroup).map(([time, obj]) => ({ time, value: Math.round(obj.avgSize) }));
-  state.cacheData = Object.entries(timeGroup).map(([time, obj]) => ({ time, value: obj.cacheRate.toFixed(2) }));
+  state.cacheData = Object.entries(timeGroup).map(([time, obj]) => ({ time, value: Math.floor(obj.cacheRate * 100) / 100 }));
 
   const ipGroup = data.reduce((group, row) => {
     if (row.type == 6 && row.answer !== "") {
