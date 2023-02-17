@@ -10,7 +10,7 @@ import (
 
 type Message struct {
 	ID       int                 `json:"id"`
-	Time     *time.Time          `json:"time"`
+	Time     *time.Time          `gorm:"index" json:"time"`
 	Type     dnstap.Message_Type `json:"type"`
 	IP       string              `json:"ip"`
 	Port     uint32              `json:"port"`
