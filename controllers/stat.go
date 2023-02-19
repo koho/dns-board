@@ -22,7 +22,8 @@ type ClientStat struct {
 }
 
 type Domain struct {
-	IP    string `json:"ip"`
+	IPv4  string `json:"ipv4"`
+	IPv6  string `json:"ipv6"`
 	Count int    `json:"count"`
 }
 
@@ -62,7 +63,12 @@ func GetStat(c *gin.Context) {
 					ips := strings.Split(m.Answer, ",")
 					if len(ips) > 0 {
 						d.Count++
-						d.IP = ips[0]
+						switch m.QType {
+						case "A":
+							d.IPv4 = ips[0]
+						case "AAAA":
+							d.IPv6 = ips[0]
+						}
 					}
 				}
 				qtc[m.QType]++

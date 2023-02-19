@@ -167,7 +167,7 @@ function stat(data) {
   state.queryCount = qCount;
   state.durationData = durationData;
   state.rcodeData = rcodeData;
-  state.domainList = Object.entries(data.ds).map(([name, obj]) => ({ name, ip: obj.ip, count: obj.count })).sort((a, b) => b.count - a.count);
+  state.domainList = Object.entries(data.ds).map(([name, obj]) => ({ name, ip: obj.ipv4 !== "" ? obj.ipv4 : obj.ipv6, count: obj.count })).sort((a, b) => b.count - a.count);
   state.ipCount = Object.entries(data.ipc).map(([ip, obj]) => ({ ip, count: obj })).sort((a, b) => b.count - a.count);
   state.qtypeCount = Object.entries(data.qtc).map(([type, obj]) => ({ type, value: obj })).sort((a, b) => b.value - a.value);
   state.sizeData = sizeData;
