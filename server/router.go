@@ -39,6 +39,7 @@ func NewRouter() (r *gin.Engine) {
 		api.GET("/size", controllers.GetResponseSize)
 		api.GET("/cache", controllers.GetCacheHit)
 		api.GET("/raw", controllers.GetRawData)
+		api.GET("/stat", controllers.GetStat)
 	}
 	return
 }

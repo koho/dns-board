@@ -60,7 +60,7 @@ const rcode2String = {
   23: "BADCOOKIE",
 }
 
-function stat(data) {
+function statRaw(data) {
   const rcodeMap = {};
   const timeGroup = data.reduce((group, row) => {
     const time = row.time.substr(0, 16).replace('T', ' ');
@@ -142,8 +142,40 @@ function stat(data) {
   });
 }
 
+function stat(data) {
+  const qCount = [];
+  const sizeData = [];
+  const cacheData = [];
+  const rcodeData = [];
+  const rcodeMap = {};
+  const durationData = [];
+  const timeData = Object.entries(data.cs).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+  timeData.forEach(([time, e]) => {
+    qCount.push({time, value: e.req});
+    sizeData.push({time, value: e.size});
+    cacheData.push({time, value: Math.floor(e.cache / e.req * 100) / 100});
+    Object.keys(e.rcode).forEach(r => { rcodeMap[r] = 0; });
+    Object.entries(e.fwd).forEach(([f, d]) => {
+      durationData.push({time, type: f, value: d});
+    });
+  });
+  timeData.forEach(([time, e]) => {
+    Object.entries(rcodeMap).forEach(([code, count]) => {
+      rcodeData.push({ time, type: rcode2String[code], value: e.rcode[code] ?? count });
+    });
+  });
+  state.queryCount = qCount;
+  state.durationData = durationData;
+  state.rcodeData = rcodeData;
+  state.domainList = Object.entries(data.ds).map(([name, obj]) => ({ name, ip: obj.ip, count: obj.count })).sort((a, b) => b.count - a.count);
+  state.ipCount = Object.entries(data.ipc).map(([ip, obj]) => ({ ip, count: obj })).sort((a, b) => b.count - a.count);
+  state.qtypeCount = Object.entries(data.qtc).map(([type, obj]) => ({ type, value: obj })).sort((a, b) => b.value - a.value);
+  state.sizeData = sizeData;
+  state.cacheData = cacheData;
+}
+
 onMounted(function () {
-  axios.get('/api/raw?hour=' + state.hour, getTokenHeader()).then(resp => {
+  axios.get('/api/stat?hour=' + state.hour, getTokenHeader()).then(resp => {
     stat(resp.data);
   }).catch(function (error) {
     // handle error
