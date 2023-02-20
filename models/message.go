@@ -31,9 +31,7 @@ func AddTimeClause(m *gorm.DB, duration string) *gorm.DB {
 	if err != nil {
 		return m
 	}
-	end := time.Now()
-	start := end.Add(-d)
-	return m.Where("time between ? and ?", start, end)
+	return m.Where("time > ?", time.Now().Add(-d))
 }
 
 func GetMessagesByType(t dnstap.Message_Type, duration string) ([]Message, error) {
