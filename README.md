@@ -2,6 +2,10 @@
 
 A mini dns dashboard for DNSTAP.
 
+## Screenshots
+
+![home](/docs/screenshot.png)
+
 ## Compile
 
 1. Build web pages
